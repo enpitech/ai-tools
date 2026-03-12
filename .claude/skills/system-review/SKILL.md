@@ -1,4 +1,11 @@
-# System Review — Full Codebase React Audit (Mode 2)
+---
+name: system-review
+description: Run a full-codebase 7-pass React/Next.js audit with system-level checks. Use when auditing an entire project, checking for architectural issues, or performing a comprehensive code quality review.
+disable-model-invocation: true
+allowed-tools: Bash(find *), Bash(grep *), Bash(git *), Read, Grep, Glob, Write
+---
+
+# System Review — Full Codebase React Audit
 
 Review scope: **Entire codebase.** Local-only — not available in CI.
 

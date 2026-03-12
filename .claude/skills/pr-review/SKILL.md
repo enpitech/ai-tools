@@ -1,4 +1,11 @@
-# PR Review — Diff-Scoped React Review (Mode 1)
+---
+name: pr-review
+description: Run a 7-pass React/Next.js code review scoped to the current PR diff. Use when reviewing pull requests, checking code before merge, or when the user asks for a code review.
+disable-model-invocation: true
+allowed-tools: Bash(gh *), Bash(git *), Bash(grep *), Bash(find *), Read, Grep, Glob, Write
+---
+
+# PR Review — Diff-Scoped React Review
 
 Review scope: **PR diff + directly affected files only.**
 

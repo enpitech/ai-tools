@@ -1,6 +1,6 @@
 # React Review
 
-7-pass React/Next.js code review system for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — CI + local modes.
+7-pass React/Next.js code review system for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — CI + local [skills](https://code.claude.com/docs/en/skills).
 
 ## What It Does
 
@@ -77,8 +77,8 @@ cp -r react-review/.github your-project/
 | File | Purpose | Required? |
 |------|---------|-----------|
 | `.claude/rules/pr-review-criteria.md` | Shared 7-pass review criteria | Yes |
-| `.claude/commands/pr-review.md` | Local `/pr-review` command | For local use |
-| `.claude/commands/system-review.md` | Local `/system-review` command | For local use |
+| `.claude/skills/pr-review/SKILL.md` | Local `/pr-review` skill | For local use |
+| `.claude/skills/system-review/SKILL.md` | Local `/system-review` skill | For local use |
 | `.github/workflows/claude-code-review.yml` | CI workflow | For GitHub Actions |
 
 ## CI Setup
@@ -120,7 +120,18 @@ Edit `.claude/rules/pr-review-criteria.md` to:
 - Add framework-specific checks
 - Modify context-aware detection rules
 
-Both modes and the CI workflow reference this single file — one source of truth.
+Both skills and the CI workflow reference this single file — one source of truth.
+
+## Skills vs Commands
+
+This repo uses the [skills format](https://code.claude.com/docs/en/skills) (`.claude/skills/<name>/SKILL.md`) — the recommended approach that supersedes `.claude/commands/`. Skills add:
+
+- **YAML frontmatter** for `allowed-tools`, `disable-model-invocation`, `description`, etc.
+- **Auto-invocation** — Claude can trigger skills automatically based on description match
+- **Supporting files** — templates, scripts, and examples in the skill directory
+- **Subagent execution** via `context: fork`
+
+Existing `.claude/commands/` files still work but won't get these features.
 
 ## License
 
