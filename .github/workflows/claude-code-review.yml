@@ -16,8 +16,7 @@ jobs:
         contains(github.event.comment.body, '/cr-python') ||
         contains(github.event.comment.body, '/cr-general') ||
         contains(github.event.comment.body, '/cr-deps') ||
-        contains(github.event.comment.body, '/cr-fullstack') ||
-        contains(github.event.comment.body, '/claude-review')) &&
+        contains(github.event.comment.body, '/cr-fullstack')) &&
        (github.event.comment.author_association == 'OWNER' ||
         github.event.comment.author_association == 'MEMBER' ||
         github.event.comment.author_association == 'COLLABORATOR'))

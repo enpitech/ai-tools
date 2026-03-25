@@ -48,7 +48,7 @@ Pixel-perfect implementation from Figma designs via MCP. Auto breakpoints, desig
 Fullstack and general skills detect your language and framework automatically.
 
 ### ⚡ CI-ready
-Ships with a GitHub Actions workflow. Comment `/cr-react` on a PR → inline review comments.
+Ships with a GitHub Actions workflow. Comment `/cr-react` on a PR → threaded review comments with `/fix` autofix support.
 
 ### 🛠 Customizable
 All criteria live in plain markdown files. Add passes, change thresholds, adapt to your stack. More skills coming.
@@ -66,13 +66,13 @@ All criteria live in plain markdown files. Add passes, change thresholds, adapt 
 <td>
 
 #### 💬 PR review in CI
-A developer opens a PR with React changes. A teammate comments `/cr-react`. Claude runs 7 review passes on the diff and posts inline comments on bugs and security issues.
+A developer opens a PR with React changes. A teammate comments `/cr-react`. Claude runs 7 review passes on the diff and posts a threaded comment with findings. Each finding ends with "reply `/fix`" and the summary ends with "reply `/fix-all`".
 
 </td>
 <td>
 
 #### 🔍 Pre-merge local check
-Before pushing a Node.js branch, run `/enpitech:cr-node` locally. Get a report covering bugs, security, async patterns, error handling, API design, performance, and code quality.
+Before pushing a Node.js branch, run `/enpitech:cr-node` locally. Get a findings report, then choose: save to file, fix step by step (approve each change), or fix all at once.
 
 </td>
 </tr>
@@ -406,6 +406,7 @@ Once the files are in your repo, any AI coding assistant can use them:
 | `rules/general.md` | Language-agnostic 5-pass review criteria |
 | `rules/deps.md` | Dependency audit criteria |
 | `rules/fullstack.md` | Cross-layer check criteria |
+| `rules/autofix.md` | Autofix workflow (local options + CI comment format) |
 
 **Skills** (pick by language + scope):
 
@@ -436,6 +437,8 @@ Once the files are in your repo, any AI coding assistant can use them:
 2. Add `ANTHROPIC_API_KEY` to your repo secrets (Settings → Secrets → Actions)
 3. Comment one of these on any PR:
 
+### Review Commands
+
 | Trigger | Review Type |
 |:--------|:------------|
 | `/cr-react` | React/Next.js code review |
@@ -444,15 +447,28 @@ Once the files are in your repo, any AI coding assistant can use them:
 | `/cr-general` | Language-agnostic code review |
 | `/cr-deps` | Dependency health audit |
 | `/cr-fullstack` | Fullstack auto-detect + cross-layer |
-| `/claude-review` | React review (backward compatible) |
 
 > `cra-*` skills (full audits) are local-only and not triggered in CI.
+
+### Autofix Commands
+
+After a review posts findings, reply to apply fixes:
+
+| Command | What it does | Reply to |
+|:--------|:-------------|:---------|
+| `/fix` | Apply the fix for a single finding | An individual finding comment |
+| `/fix-all` | Apply all suggested fixes at once | The main review summary comment |
+
+The autofix job checks out the PR branch, applies the fix(es), commits, and pushes automatically.
+
+### How it works
 
 The workflow:
 - Detects the trigger keyword and selects the appropriate review criteria
 - Only runs for repo collaborators (OWNER/MEMBER/COLLABORATOR)
-- Posts an acknowledgment comment, then inline review comments
-- Claude cannot post arbitrary PR comments (hardened against prompt injection)
+- Posts a summary comment with all findings, each linking to `/fix`
+- Posts individual finding replies with full details and suggested code changes
+- `/fix` and `/fix-all` replies trigger a separate job that applies fixes and pushes
 
 <details>
 <summary><strong>Optional: Auto-trigger on PR</strong></summary>
@@ -477,10 +493,10 @@ on:
 
 ## Security
 
-- `gh pr comment` removed from Claude's allowed tools — prevents prompt injection via malicious PR descriptions
-- Claude can only post structured inline comments via MCP tool
-- Completion message is posted by the workflow itself, outside Claude's control
 - Trigger restricted to repo OWNER/MEMBER/COLLABORATOR only
+- Autofix only applies changes suggested in review findings — no arbitrary modifications
+- Fix job requires explicit `/fix` or `/fix-all` reply from an authorized collaborator
+- All commits are attributed to `github-actions[bot]`
 
 ## Customization
 
@@ -494,6 +510,7 @@ Edit the criteria files in `rules/` to add/remove review passes, adjust confiden
 | `rules/general.md` | Language-agnostic review rules |
 | `rules/deps.md` | Dependency audit rules |
 | `rules/fullstack.md` | Cross-layer check rules |
+| `rules/autofix.md` | Autofix workflow (local + CI) |
 
 All review skills reference these files — single source of truth per concern.
 
