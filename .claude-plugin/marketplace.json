@@ -2,6 +2,12 @@
   "name": "enpitech",
   "owner": { "name": "Enpitech" },
   "plugins": [
-    { "name": "enpitech", "source": "." }
+    {
+      "name": "enpitech",
+      "source": {
+        "source": "github",
+        "repo": "enpitech/ai-tools"
+      }
+    }
   ]
 }
