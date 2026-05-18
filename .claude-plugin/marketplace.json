@@ -1,0 +1,7 @@
+{
+  "name": "enpitech",
+  "owner": { "name": "Enpitech" },
+  "plugins": [
+    { "name": "enpitech", "source": "." }
+  ]
+}

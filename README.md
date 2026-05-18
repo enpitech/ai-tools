@@ -24,6 +24,19 @@
 
 <br />
 
+## Install
+
+In Claude Code, run:
+
+```
+/plugin marketplace add enpitech/ai-tools
+/plugin install enpitech@enpitech
+```
+
+Then `/reload-plugins` to activate. Skills will be available under `/enpitech:<skill-name>`.
+
+<br />
+
 ## What's Inside
 
 This toolkit packages Enpitech's 10+ years of frontend and fullstack expertise into structured AI skills. Each skill gives your agent a **deterministic, repeatable process** — not a vague prompt, but a step-by-step system.
