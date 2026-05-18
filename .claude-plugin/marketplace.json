@@ -5,8 +5,8 @@
     {
       "name": "enpitech",
       "source": {
-        "source": "github",
-        "repo": "enpitech/ai-tools"
+        "source": "git",
+        "url": "https://github.com/enpitech/ai-tools.git"
       }
     }
   ]
