@@ -5,8 +5,9 @@
     {
       "name": "enpitech",
       "source": {
-        "source": "github",
-        "repo": "enpitech/ai-tools"
+        "source": "url",
+        "url": "https://github.com/enpitech/ai-tools.git",
+        "sha": "ace323e58ff715f6cf5978a2365e1d718b9b6acb"
       }
     }
   ]
