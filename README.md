@@ -26,10 +26,13 @@
 
 ## Install
 
-In Claude Code, run:
+In Claude Code, run these one by one:
 
 ```
 /plugin marketplace add enpitech/ai-tools
+```
+
+```
 /plugin install enpitech@enpitech
 ```
 
