@@ -134,6 +134,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Refuse fork PRs
+        id: gate
         run: |
           CROSS=$(gh pr view ${{ github.event.issue.number }} --repo ${{ github.repository }} --json isCrossRepository --jq '.isCrossRepository')
           if [ "$CROSS" = "true" ]; then
@@ -153,7 +154,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ steps.pr.outputs.ref }}
+          ref: ${{ steps.pr.outputs.sha }}
 
       - name: Run Claude PR Brief
         uses: anthropics/claude-code-action@v1
@@ -185,7 +186,7 @@ jobs:
             --allowedTools "Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(git diff:*),Bash(git log:*),Read,Grep,Glob"
 
       - name: Post brief failed
-        if: failure()
+        if: failure() && steps.gate.outcome != 'failure'
         run: |
           gh pr comment ${{ github.event.issue.number }} --repo ${{ github.repository }} --body "❌ Claude PR Brief encountered an error. Check the workflow logs."
         env:
