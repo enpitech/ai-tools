@@ -20,7 +20,7 @@
 
 <br />
 
-> **Built by [Enpitech](https://enpitech.dev)** | a comprehensive AI engineering toolkit for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), VS Code Copilot, Cursor, and more. Multi-pass code review, Figma-to-code implementation, and growing. Works in CI and locally. Supports React, Node.js, Python, and any language.
+> **Built by [Enpitech](https://enpitech.dev)** | a comprehensive AI engineering toolkit for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), VS Code Copilot, Cursor, and more. Multi-pass code review, decision-level PR briefs, Figma-to-code implementation, and growing. Works in CI and locally. Supports React, Node.js, Python, and any language.
 
 <br />
 
@@ -64,7 +64,7 @@ Pixel-perfect implementation from Figma designs via MCP. Auto breakpoints, desig
 Fullstack and general skills detect your language and framework automatically.
 
 ### ⚡ CI-ready
-Ships with a GitHub Actions workflow. Comment `/cr-react` on a PR → threaded review comments with `/fix` autofix support.
+Ships with a GitHub Actions workflow. Comment `/cr-react` on a PR → threaded review comments with `/fix` autofix support. Comment `/cr-brief` → a one-screen summary anyone on the team can read.
 
 ### 🛠 Customizable
 All criteria live in plain markdown files. Add passes, change thresholds, adapt to your stack. More skills coming.
@@ -120,6 +120,14 @@ Before a release, `/enpitech:cr-deps` checks for CVEs, outdated packages, deprec
 
 </td>
 </tr>
+<tr>
+<td colspan="2">
+
+#### 📝 PR brief for the whole team
+A 40-file PR lands. Someone comments `/cr-brief`. Claude posts one comment: a plain-language summary a PM or QA can read, then what was decided, what behaves differently before vs after, the 3–6 files the reviewer must actually open, and the real risks. The reviewer starts with context instead of a wall of diff.
+
+</td>
+</tr>
 </table>
 
 <br />
@@ -152,8 +160,10 @@ Two scope prefixes, applied uniformly across all languages:
 | `cr-deps` | Deps | 6-pass dependency health audit | `/cr-deps` |
 | `cr-fullstack` | Diff | Auto-detect stack + cross-layer checks | `/cr-fullstack` |
 | `cra-fullstack` | Full | Full audit per layer + cross-layer + dep audit | — |
+| `cr-brief` | Diff | Decision-level PR brief in plain language — no findings | `/cr-brief` |
 
 > All review skills report only **CRITICAL** and **WARNING** findings at **8/10+ confidence**.
+> `cr-brief` is the exception: it summarizes instead of reviewing, and never reports findings.
 
 <br />
 
@@ -326,6 +336,34 @@ Auto-detects npm, yarn, pnpm, pip, poetry, uv, pipenv.
 </details>
 
 <details>
+<summary><strong>PR Brief</strong> — 5 passes, no findings</summary>
+
+<br />
+
+Writes the "meat" of a PR on one screen so a reviewer doesn't have to read every changed file. Two layers: a **plain-language summary** for non-developers (PMs, QA, founders), then a short **reviewer section**.
+
+| Pass | Produces | Rule |
+|:-----|:---------|:-----|
+| 1. THE DECISION | What problem, which approach, what alternative was passed over | 1–2 sentences |
+| 2. BEFORE → AFTER | Observable behavior change, API/data/permission changes | Behavior, not implementation |
+| 3. FILES THAT MATTER | The 3–6 files a reviewer must open, ranked by decision weight | Tests, lockfiles, call-site updates excluded |
+| 4. REAL RISKS | Risks specific to this diff that QA or a reviewer can verify | No generic advice, "None identified" allowed |
+| 5. OPEN QUESTIONS | Up to 3 things the author must answer before approval | Omitted when there are none |
+
+**Hard rules**: the plain-language summary contains no file or function names. The whole brief is under 250 words excluding the files table. Undocumented intent is called out, never invented.
+
+```
+/enpitech:cr-brief            # Current branch's PR
+/enpitech:cr-brief 123        # PR #123
+/enpitech:cr-brief feat/x dev # Branch feat/x against base dev
+```
+
+**Local mode**: shows the brief as text, then offers to save it as `cr-brief.md` or post it to the PR.
+**CI mode**: comment `/cr-brief` on a PR → one summary comment, no `/fix` replies.
+
+</details>
+
+<details>
 <summary><strong>Figma → Code</strong> — Implementation Skill</summary>
 
 <br />
@@ -422,6 +460,7 @@ Once the files are in your repo, any AI coding assistant can use them:
 | `rules/general.md` | Language-agnostic 5-pass review criteria |
 | `rules/deps.md` | Dependency audit criteria |
 | `rules/fullstack.md` | Cross-layer check criteria |
+| `rules/brief.md` | PR brief criteria + output template |
 | `rules/autofix.md` | Autofix workflow (local options + CI comment format) |
 
 **Skills** (pick by language + scope):
@@ -439,6 +478,7 @@ Once the files are in your repo, any AI coding assistant can use them:
 | `skills/cr-deps/SKILL.md` | Dependency health audit |
 | `skills/cr-fullstack/SKILL.md` | PR diff fullstack review |
 | `skills/cra-fullstack/SKILL.md` | Full codebase fullstack audit |
+| `skills/cr-brief/SKILL.md` | Decision-level PR brief (plain language + reviewer section) |
 | `skills/figma-to-code/SKILL.md` | Figma → pixel-perfect production code |
 
 </details>
@@ -463,6 +503,7 @@ Once the files are in your repo, any AI coding assistant can use them:
 | `/cr-general` | Language-agnostic code review |
 | `/cr-deps` | Dependency health audit |
 | `/cr-fullstack` | Fullstack auto-detect + cross-layer |
+| `/cr-brief` | Decision-level PR brief (one comment, no `/fix`) |
 
 > `cra-*` skills (full audits) are local-only and not triggered in CI.
 
@@ -526,6 +567,7 @@ Edit the criteria files in `rules/` to add/remove review passes, adjust confiden
 | `rules/general.md` | Language-agnostic review rules |
 | `rules/deps.md` | Dependency audit rules |
 | `rules/fullstack.md` | Cross-layer check rules |
+| `rules/brief.md` | PR brief passes, length limit, output template |
 | `rules/autofix.md` | Autofix workflow (local + CI) |
 
 All review skills reference these files — single source of truth per concern.
