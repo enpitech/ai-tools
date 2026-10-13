@@ -551,7 +551,7 @@ on:
 ## Security
 
 - Trigger restricted to repo OWNER/MEMBER/COLLABORATOR only
-- `/cr-brief` refuses PRs from forks and treats PR text, commits, and code as data, never as instructions
+- Review and brief jobs refuse PRs from forks, check out the exact gated commit, and treat PR text, commits, and code as data, never as instructions
 - Autofix only applies changes suggested in review findings — no arbitrary modifications
 - Fix job requires explicit `/fix` or `/fix-all` reply from an authorized collaborator
 - All commits are attributed to `github-actions[bot]`
